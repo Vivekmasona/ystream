@@ -6,30 +6,18 @@ const port = 3000;
 // CORS middleware
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
-});
-
-// Assume the song started at a specific time
-const songStartTime = new Date();  // Song starts when the server starts
-const songDuration = 1800; // Song duration in seconds (e.g., 30 minutes)
-
-// Function to calculate current playback time
-function getCurrentPlaybackTime() {
-    const currentTime = new Date();
-    const elapsedTime = (currentTime - songStartTime) / 1000;
-    const currentPlaybackTime = elapsedTime % songDuration; // Loop the song if it exceeds duration
-    return currentPlaybackTime;
-}
-
-app.get('/current_time', (req, res) => {
-    res.json({ time: getCurrentPlaybackTime() });
 });
 
 // Stream audio continuously
 app.get('/stream', (req, res) => {
-    const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/ZphLgbLgdPI?si=ujMYkCiG1ibz8BBD'; // Your audio URL
+    console.log('Stream endpoint hit');
+    const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/zmwfd8x0DrM?si=WpPDoKvSn5veYUKf'; // Your audio URL
     https.get(audioUrl, (response) => {
         if (response.statusCode !== 200) {
+            console.error(`Failed to fetch audio: ${response.statusCode}`);
             res.status(response.statusCode).end();
             return;
         }
