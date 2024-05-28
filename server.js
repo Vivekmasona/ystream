@@ -27,7 +27,7 @@ app.get('/current_time', (req, res) => {
 
 // Stream audio continuously
 app.get('/stream', (req, res) => {
-    const audioUrl = 'https://vivekfy-server.000webhostapp.com/play/deno?url=https://youtu.be/Nl2rqIL3Rpo'; // Your audio URL
+    const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/ZphLgbLgdPI?si=ujMYkCiG1ibz8BBD'; // Your audio URL
     https.get(audioUrl, (response) => {
         res.writeHead(200, {
             'Content-Type': 'audio/mpeg',
