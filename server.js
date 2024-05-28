@@ -1,43 +1,38 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const app = express();
-const port = 3000;
+app.use(bodyParser.json());
+app.use(cors());
 
-// Song start time
-const songStartTime = new Date();
+let audioVolume = 100; // Default volume
+let currentAction = ''; // Store the current action
+let audioUrl = ''; // Store the current audio URL
 
-// Audio URL (You can replace this with your actual audio file URL)
-const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/Nl2rqIL3Rpo';
-
-// Song duration in seconds (e.g., 24 hours)
-const songDuration = 86400; // 24 hours
-
-app.get('/json', (req, res) => {
-    const currentTime = new Date();
-    const elapsedTime = (currentTime - songStartTime) / 1000;
-    const currentPlaybackTime = elapsedTime % songDuration; // Loop the song if it exceeds duration
-    
-    // Constructing the audio playback URL with current playback time
-    const audioPlaybackUrl = `${audioUrl}#t=${currentPlaybackTime}`;
-    
-    // Sending JSON response with audio playback URL and current playback time
-    res.json({ audioUrl: audioPlaybackUrl, currentTime: currentPlaybackTime });
+app.post('/update-url', (req, res) => {
+    const { url } = req.body;
+    audioUrl = url;
+    res.json({ status: 'URL updated' });
 });
 
-app.get('/radio', (req, res) => {
-    const currentTime = new Date();
+app.post('/control', (req, res) => {
+    const { action, volume } = req.body;
 
-    // Calculate the seconds elapsed since the start of the day
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const seconds = currentTime.getSeconds();
-    const currentPlaybackTime = (hours * 3600) + (minutes * 60) + seconds;
-
-    // Redirect to the audio URL with the current playback time
-    const redirectUrl = `${audioUrl}#t=${currentPlaybackTime}`;
-    res.redirect(redirectUrl);
+    // Handle play, pause, stop, skipForward, and skipBackward actions
+    if (action === 'play' || action === 'pause' || action === 'stop' || action === 'skipForward' || action === 'skipBackward') {
+        currentAction = action;
+        res.json({ status: `${action} command received` });
+    } else if (volume !== undefined && volume >= 0 && volume <= 100) {
+        audioVolume = volume;
+        res.json({ status: 'Volume updated', volume: audioVolume });
+    } else {
+        res.status(400).json({ error: 'Invalid action or volume value' });
+    }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
