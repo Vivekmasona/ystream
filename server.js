@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 // Audio URL (You can replace this with your actual audio file URL)
-const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/zmwfd8x0DrM?si=WpPDoKvSn5veYUKf';
+const audioUrl = 'https://vivekfy-server.000webhostapp.com/play/deno?url=https://youtu.be/Nl2rqIL3Rpo';
 
 // Assume the song started at a specific time when the server starts
 const songStartTime = Date.now();  // More precise than `new Date()`
@@ -21,28 +21,9 @@ app.get('/radio', (req, res) => {
     const elapsedTime = (currentTime - songStartTime) / 1000;
     const currentPlaybackTime = elapsedTime % songDuration;
 
-    const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Live Radio</title>
-        </head>
-        <body>
-            <h1>Live Radio</h1>
-            <audio id="audio" controls autoplay>
-                <source src="${audioUrl}#t=${Math.floor(currentPlaybackTime)}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            <script>
-                const audio = document.getElementById('audio');
-                audio.controls = false; // Disable controls to prevent skipping
-                audio.currentTime = ${Math.floor(currentPlaybackTime)};
-                audio.play();
-            </script>
-        </body>
-        </html>
-    `;
-    res.send(html);
+    // Redirect to the audio URL with the current playback time
+    const redirectUrl = `${audioUrl}#t=${Math.floor(currentPlaybackTime)}`;
+    res.redirect(redirectUrl);
 });
 
 app.listen(port, () => {
