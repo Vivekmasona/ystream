@@ -8,34 +8,30 @@ app.use(cors());
 
 let audioStatus = 'stop'; // Initial status of the audio player
 let audioUrl = ''; // Initial URL of the audio
-let audioVolume = 100; // Initial volume
+let volume = 100; // Initial volume
+let skip = ''; // Initial skip status
 
 app.post('/control', (req, res) => {
-    const { action, volume } = req.body;
-    
-    // Update the audioStatus based on the action received
+    const { action, value } = req.body;
+
+    // Update the audioStatus or volume based on the action received
     if (action === 'play') {
         audioStatus = 'play';
     } else if (action === 'pause') {
         audioStatus = 'pause';
     } else if (action === 'stop') {
         audioStatus = 'stop';
-    } else if (action === 'skipForward') {
-        // Logic to skip forward
-    } else if (action === 'skipBackward') {
-        // Logic to skip backward
+    } else if (action === 'volume') {
+        volume = value;
+    } else if (action === 'skipForward' || action === 'skipBackward') {
+        skip = action;
     }
 
-    // Update the volume if provided
-    if (volume !== undefined && volume >= 0 && volume <= 100) {
-        audioVolume = volume;
-    }
-
-    res.json({ status: 'Button click received', action, volume: audioVolume });
+    res.json({ status: 'Button click received', action });
 });
 
 app.get('/audio-status', (req, res) => {
-    res.json({ status: audioStatus });
+    res.json({ status: audioStatus, volume: volume, skip: skip });
 });
 
 app.post('/update-url', (req, res) => {
