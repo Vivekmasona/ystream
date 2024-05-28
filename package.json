@@ -1,0 +1,15 @@
+{
+  "name": "audio-streaming-server",
+  "version": "1.0.0",
+  "description": "A simple server to stream audio from a given URL.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
