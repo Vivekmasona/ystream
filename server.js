@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 // Audio URL (You can replace this with your actual audio file URL)
-const audioUrl = 'https://vivekfy-server.000webhostapp.com/play/deno?url=https://youtu.be/Nl2rqIL3Rpo';
+const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/Nl2rqIL3Rpo';
 
 // Song duration in seconds (e.g., 24 hours)
 const songDuration = 86400; // 24 hours
