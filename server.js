@@ -11,13 +11,16 @@ const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/Nl2rqIL3
 // Song duration in seconds (e.g., 24 hours)
 const songDuration = 86400; // 24 hours
 
-app.get('/current_time', (req, res) => {
+app.get('/json', (req, res) => {
     const currentTime = new Date();
     const elapsedTime = (currentTime - songStartTime) / 1000;
     const currentPlaybackTime = elapsedTime % songDuration; // Loop the song if it exceeds duration
     
-    // Sending JSON response with current playback time
-    res.json({ currentTime: currentPlaybackTime });
+    // Constructing the audio playback URL with current playback time
+    const audioPlaybackUrl = `${audioUrl}#t=${currentPlaybackTime}`;
+    
+    // Sending JSON response with audio playback URL and current playback time
+    res.json({ audioUrl: audioPlaybackUrl, currentTime: currentPlaybackTime });
 });
 
 app.get('/radio', (req, res) => {
