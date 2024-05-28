@@ -29,6 +29,10 @@ app.get('/current_time', (req, res) => {
 app.get('/stream', (req, res) => {
     const audioUrl = 'https://vivekfy.vercel.app/audio?url=https://youtu.be/ZphLgbLgdPI?si=ujMYkCiG1ibz8BBD'; // Your audio URL
     https.get(audioUrl, (response) => {
+        if (response.statusCode !== 200) {
+            res.status(response.statusCode).end();
+            return;
+        }
         res.writeHead(200, {
             'Content-Type': 'audio/mpeg',
             'Transfer-Encoding': 'chunked',
@@ -37,6 +41,9 @@ app.get('/stream', (req, res) => {
             'Connection': 'keep-alive'
         });
         response.pipe(res);
+    }).on('error', (e) => {
+        console.error(`Got error: ${e.message}`);
+        res.status(500).send('Error fetching audio stream');
     });
 });
 
