@@ -1,5 +1,5 @@
 const express = require('express');
-const axios = require('axios');
+const https = require('https');
 const app = express();
 const port = 3000;
 
@@ -26,27 +26,17 @@ app.get('/current_time', (req, res) => {
 });
 
 // Stream audio continuously
-app.get('/stream', async (req, res) => {
+app.get('/stream', (req, res) => {
     const audioUrl = 'https://vivekfy-server.000webhostapp.com/play/deno?url=https://youtu.be/Nl2rqIL3Rpo'; // Your audio URL
-    const response = await axios.get(audioUrl, { responseType: 'stream' });
-    res.writeHead(200, {
-        'Content-Type': 'audio/mpeg',
-        'Transfer-Encoding': 'chunked',
-        'X-Content-Type-Options': 'nosniff',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
-    });
-    response.data.pipe(res);
-
-    // Send current playback time every second
-    const interval = setInterval(() => {
-        const currentTime = getCurrentPlaybackTime();
-        res.write(`\nTime: ${currentTime}`);
-    }, 1000);
-
-    // Cleanup on connection close
-    req.connection.on('close', () => {
-        clearInterval(interval);
+    https.get(audioUrl, (response) => {
+        res.writeHead(200, {
+            'Content-Type': 'audio/mpeg',
+            'Transfer-Encoding': 'chunked',
+            'X-Content-Type-Options': 'nosniff',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
+        response.pipe(res);
     });
 });
 
